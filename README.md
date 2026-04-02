@@ -6,22 +6,23 @@ A full-stack, real-time campus shuttle tracking application for VIT Vellore stud
 
 ## ✨ Features
 
-| Feature | Description |
-|---|---|
+| Feature                      | Description                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------ |
 | 🗺️ **Live Shuttle Tracking** | Interactive Leaflet map with 10 real-time shuttle locations updating every 3 seconds |
-| ⏱️ **ETA Calculation** | Haversine-based nearest shuttle detection and estimated arrival time |
-| 🛣️ **Route View** | Visual campus route loop: Main Gate → SMV → J Block → TT → SJT → PRP |
-| 🚏 **Bus Stop Selection** | Browse all 6 stops; select your default boarding stop for personalised ETAs |
-| 💬 **Feedback System** | Submit star-rated feedback; view and delete your own entries |
-| 🔐 **JWT Authentication** | Secure register/login flow with bcrypt password hashing |
-| 💰 **Fare Display** | Flat ₹20 fare shown alongside destination ETA |
-| 🔴 **404 Page** | Friendly not-found screen for unknown routes |
+| ⏱️ **ETA Calculation**       | Haversine-based nearest shuttle detection and estimated arrival time                 |
+| 🛣️ **Route View**            | Visual campus route loop: Main Gate → SMV → J Block → TT → SJT → PRP                 |
+| 🚏 **Bus Stop Selection**    | Browse all 6 stops; select your default boarding stop for personalised ETAs          |
+| 💬 **Feedback System**       | Submit star-rated feedback; view and delete your own entries                         |
+| 🔐 **JWT Authentication**    | Secure register/login flow with bcrypt password hashing                              |
+| 💰 **Fare Display**          | Flat ₹20 fare shown alongside destination ETA                                        |
+| 🔴 **404 Page**              | Friendly not-found screen for unknown routes                                         |
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend (`/frontend`)
+
 - **React 18** — Component-based SPA
 - **Vite** — Lightning-fast dev server & bundler
 - **React Router DOM v6** — Client-side routing with protected routes
@@ -30,6 +31,7 @@ A full-stack, real-time campus shuttle tracking application for VIT Vellore stud
 - **Vanilla CSS** — Custom "Oceanic Pulse" design system (no Tailwind)
 
 ### Backend (`/backend`)
+
 - **Node.js & Express** — REST API server
 - **better-sqlite3** — Embedded SQLite database (WAL mode)
 - **JSON Web Tokens (JWT)** — Stateless auth tokens
@@ -78,42 +80,48 @@ Shuttle_Management_Project_Web_Prog/
 ## 📡 API Endpoints
 
 ### Auth — `/api/auth`
-| Method | Endpoint | Description |
-|---|---|---|
+
+| Method | Endpoint    | Description                  |
+| ------ | ----------- | ---------------------------- |
 | `POST` | `/register` | Create a new student account |
-| `POST` | `/login` | Authenticate and receive JWT |
+| `POST` | `/login`    | Authenticate and receive JWT |
 
-### Bus — `/api/bus` *(requires JWT)*
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/location` | All 10 shuttle positions + route waypoints |
-| `GET` | `/stops` | All 6 bus stops + user's selected stop |
-| `POST` | `/select-stop` | Set the user's default boarding stop |
-| `GET` | `/eta` | Nearest bus ETA + optional destination ETA |
+### Bus — `/api/bus` _(requires JWT)_
 
-### Feedback — `/api/feedback` *(requires JWT)*
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/` | Fetch all feedback entries |
-| `POST` | `/` | Submit a new star-rated feedback |
-| `DELETE` | `/:id` | Delete own feedback entry |
+| Method | Endpoint       | Description                                |
+| ------ | -------------- | ------------------------------------------ |
+| `GET`  | `/location`    | All 10 shuttle positions + route waypoints |
+| `GET`  | `/stops`       | All 6 bus stops + user's selected stop     |
+| `POST` | `/select-stop` | Set the user's default boarding stop       |
+| `GET`  | `/eta`         | Nearest bus ETA + optional destination ETA |
+
+### Feedback — `/api/feedback` _(requires JWT)_
+
+| Method   | Endpoint | Description                      |
+| -------- | -------- | -------------------------------- |
+| `GET`    | `/`      | Fetch all feedback entries       |
+| `POST`   | `/`      | Submit a new star-rated feedback |
+| `DELETE` | `/:id`   | Delete own feedback entry        |
 
 ### Health
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/health` | Server liveness check |
+
+| Method | Endpoint      | Description           |
+| ------ | ------------- | --------------------- |
+| `GET`  | `/api/health` | Server liveness check |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** v18 or later
 - **npm** v9 or later
 
 ---
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/KISHAN1506/ShuttleManagement_Web_Prog.git
 cd ShuttleManagement_Web_Prog
@@ -122,12 +130,14 @@ cd ShuttleManagement_Web_Prog
 ---
 
 ### 2. Configure & Start the Backend
+
 ```bash
 cd backend
 npm install
 ```
 
 Create a `.env` file inside `backend/` (already included in the repo for local dev):
+
 ```env
 PORT=5001
 JWT_SECRET=vit_shuttle_secret_key_2024
@@ -135,21 +145,26 @@ FRONTEND_URL=http://localhost:5173
 ```
 
 Start the server:
+
 ```bash
 npm start
 ```
+
 > The API will be available at **http://localhost:5001**  
 > SQLite tables and seed data are created automatically on first run.
 
 ---
 
 ### 3. Start the Frontend
+
 Open a **new terminal**:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
 > The app will be available at **http://localhost:5173**  
 > Vite automatically proxies all `/api/*` requests to the backend on port 5001.
 
@@ -169,15 +184,15 @@ Important: GitHub Pages can host the frontend only. The login, shuttle, and feed
 
 A custom dark design system built in vanilla CSS with design tokens.
 
-| Token | Value | Usage |
-|---|---|---|
-| `--color-bg` | `#0b1521` | Deep Navy — page background |
-| `--color-surface` | `rgba(255,255,255,0.06)` | Glassmorphism card surfaces |
-| `--color-primary` | `#22d3ee` | Vibrant Teal — primary actions & accents |
-| `--color-secondary` | `#fb7185` | Warm Coral — secondary highlights |
-| `--color-tertiary` | `#fbbf24` | Amber — warnings & ratings |
-| `--font-display` | *Space Grotesk* | Headlines & brand text |
-| `--font-body` | *Inter* | Body copy & UI labels |
+| Token               | Value                    | Usage                                    |
+| ------------------- | ------------------------ | ---------------------------------------- |
+| `--color-bg`        | `#0b1521`                | Deep Navy — page background              |
+| `--color-surface`   | `rgba(255,255,255,0.06)` | Glassmorphism card surfaces              |
+| `--color-primary`   | `#22d3ee`                | Vibrant Teal — primary actions & accents |
+| `--color-secondary` | `#fb7185`                | Warm Coral — secondary highlights        |
+| `--color-tertiary`  | `#fbbf24`                | Amber — warnings & ratings               |
+| `--font-display`    | _Space Grotesk_          | Headlines & brand text                   |
+| `--font-body`       | _Inter_                  | Body copy & UI labels                    |
 
 **Aesthetic:** Dark glassmorphism (`backdrop-filter: blur`), smooth glow box-shadows, bold linear gradients, and subtle entrance animations.
 

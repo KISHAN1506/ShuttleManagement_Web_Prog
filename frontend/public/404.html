@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>VIT Shuttle Management</title>
-    <script type="text/javascript">
-      (function (location) {
-        var basePath = '/ShuttleManagement_Web_Prog/';
-        var path = location.pathname.indexOf(basePath) === 0
-          ? location.pathname.slice(basePath.length)
-          : location.pathname.replace(/^\//, '');
-        var search = location.search ? '&' + location.search.slice(1).replace(/&/g, '~and~') : '';
-        var redirect = basePath + '?/' + path + search + location.hash;
 
-        location.replace(redirect);
-      }(window.location));
-    </script>
-  </head>
-  <body>
-    Redirecting...
-  </body>
+<head>
+  <meta charset="utf-8">
+  <title>VIT Shuttle Management</title>
+  <script type="text/javascript">
+    (function (location) {
+      var basePath = '/ShuttleManagement_Web_Prog/';
+      var path = location.pathname.indexOf(basePath) === 0
+        ? location.pathname.slice(basePath.length)
+        : location.pathname.replace(/^\//, '');
+      var search = location.search ? '&' + location.search.slice(1).replace(/&/g, '~and~') : '';
+      var redirect = basePath + '?/' + path + search + location.hash;
+
+      location.replace(redirect);
+    }(window.location));
+  </script>
+</head>
+
+<body>
+  Redirecting...
+</body>
+
 </html>
