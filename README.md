@@ -1,95 +1,191 @@
-# VIT Shuttle Tracker
+# 🚌 VIT Shuttle Tracker
 
-A premium, full-stack application for tracking campus shuttles in real-time. Built with React, Vite, Node.js, and Express, featuring a modern glassmorphism UI.
+A full-stack, real-time campus shuttle tracking application for VIT Vellore students. Built with **React + Vite** on the frontend and **Node.js + Express + SQLite** on the backend, featuring a premium "Oceanic Pulse" dark glassmorphism UI.
 
-## Features
+---
 
-- **Live Shuttle Tracking:** Interactive Leaflet map showing real-time bus locations and routes.
-- **Nearest Shuttle ETA:** Automatic calculation of the nearest shuttle and its estimated time of arrival.
-- **Route Selection:** View all bus stops and select destinations to see specific ETAs.
-- **Feedback System:** Submit and view real-time feedback with interactive star ratings.
-- **Premium UI / UX:** Built with a custom "Oceanic Pulse" (Teal + Coral) design system featuring dark glassmorphism, fluid animations, and gradient accents.
-- **Authentication:** Secure JWT-based login and registration system for VIT students.
+## ✨ Features
 
-## Tech Stack
+| Feature | Description |
+|---|---|
+| 🗺️ **Live Shuttle Tracking** | Interactive Leaflet map with 10 real-time shuttle locations updating every 3 seconds |
+| ⏱️ **ETA Calculation** | Haversine-based nearest shuttle detection and estimated arrival time |
+| 🛣️ **Route View** | Visual campus route loop: Main Gate → SMV → J Block → TT → SJT → PRP |
+| 🚏 **Bus Stop Selection** | Browse all 6 stops; select your default boarding stop for personalised ETAs |
+| 💬 **Feedback System** | Submit star-rated feedback; view and delete your own entries |
+| 🔐 **JWT Authentication** | Secure register/login flow with bcrypt password hashing |
+| 💰 **Fare Display** | Flat ₹20 fare shown alongside destination ETA |
+| 🔴 **404 Page** | Friendly not-found screen for unknown routes |
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend (`/frontend`)
-- React 18
-- Vite
-- React Router DOM
-- Leaflet (Maps)
-- Axios
+- **React 18** — Component-based SPA
+- **Vite** — Lightning-fast dev server & bundler
+- **React Router DOM v6** — Client-side routing with protected routes
+- **Leaflet / react-leaflet** — Interactive map rendering
+- **Axios** — HTTP client with JWT interceptor
+- **Vanilla CSS** — Custom "Oceanic Pulse" design system (no Tailwind)
 
 ### Backend (`/backend`)
-- Node.js & Express
-- SQLite (better-sqlite3)
-- JSON Web Tokens (JWT) for Authentication
-- bcryptjs for Password Hashing
+- **Node.js & Express** — REST API server
+- **better-sqlite3** — Embedded SQLite database (WAL mode)
+- **JSON Web Tokens (JWT)** — Stateless auth tokens
+- **bcryptjs** — Password hashing
+- **dotenv** — Environment variable management
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```
-vit-shuttle-management/
-├── frontend/             # React SPA
+Shuttle_Management_Project_Web_Prog/
+├── frontend/                     # React SPA
 │   ├── src/
-│   │   ├── components/   # Reusable UI components
-│   │   ├── pages/        # Route pages (Dashboard, Login, BusStops, Feedback)
-│   │   ├── api.js        # Axios instance with interceptors
-│   │   └── index.css     # Global styles & "Oceanic Pulse" design system tokens
+│   │   ├── pages/
+│   │   │   ├── Login.jsx         # Register / Login form
+│   │   │   ├── Dashboard.jsx     # Live map + ETA cards
+│   │   │   ├── RoutesPage.jsx    # Route overview & stop list
+│   │   │   ├── BusStops.jsx      # Stop browser + selection
+│   │   │   ├── Feedback.jsx      # Submit & manage feedback
+│   │   │   └── NotFound.jsx      # 404 screen
+│   │   ├── components/
+│   │   │   └── Navbar.jsx        # Top navigation bar
+│   │   ├── api.js                # Axios instance with auth interceptor
+│   │   ├── App.jsx               # Router + protected-route wrapper
+│   │   ├── index.css             # Global styles & design tokens
+│   │   └── main.jsx              # React entry point
 │   ├── package.json
-│   └── vite.config.js    # Vite config with backend proxy
+│   └── vite.config.js            # Dev server + /api proxy to :5001
 │
-└── backend/              # Node/Express API
-    ├── routes/           # API endpoints (auth, bus, feedback)
-    ├── db.js             # SQLite database init & seeding
-    ├── server.js         # Express app setup
-    └── .env              # Environment variables
+└── backend/                      # Express REST API
+    ├── routes/
+    │   ├── auth.js               # POST /api/auth/register, /login
+    │   ├── bus.js                # GET /location, /stops, /eta; POST /select-stop
+    │   └── feedback.js           # GET, POST, DELETE /api/feedback
+    ├── middleware/
+    │   └── auth.js               # JWT verification middleware
+    ├── db.js                     # SQLite init, table creation & seeding
+    ├── server.js                 # Express app + CORS setup
+    ├── shuttle.db                # SQLite database file (auto-created)
+    └── .env                      # Environment variables (not committed)
 ```
 
-## Getting Started
+---
+
+## 📡 API Endpoints
+
+### Auth — `/api/auth`
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/register` | Create a new student account |
+| `POST` | `/login` | Authenticate and receive JWT |
+
+### Bus — `/api/bus` *(requires JWT)*
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/location` | All 10 shuttle positions + route waypoints |
+| `GET` | `/stops` | All 6 bus stops + user's selected stop |
+| `POST` | `/select-stop` | Set the user's default boarding stop |
+| `GET` | `/eta` | Nearest bus ETA + optional destination ETA |
+
+### Feedback — `/api/feedback` *(requires JWT)*
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Fetch all feedback entries |
+| `POST` | `/` | Submit a new star-rated feedback |
+| `DELETE` | `/:id` | Delete own feedback entry |
+
+### Health
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Server liveness check |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18+ recommended)
-- npm
+- **Node.js** v18 or later
+- **npm** v9 or later
 
-### 1. Setup Backend
+---
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/KISHAN1506/ShuttleManagement_Web_Prog.git
+cd ShuttleManagement_Web_Prog
+```
+
+---
+
+### 2. Configure & Start the Backend
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file in the `backend/` directory (if not exists):
+Create a `.env` file inside `backend/` (already included in the repo for local dev):
 ```env
 PORT=5001
 JWT_SECRET=vit_shuttle_secret_key_2024
 FRONTEND_URL=http://localhost:5173
 ```
 
-Start the backend server (it will automatically create and seed the SQLite database):
+Start the server:
 ```bash
 npm start
 ```
-*The backend API will run on `http://localhost:5001`.*
+> The API will be available at **http://localhost:5001**  
+> SQLite tables and seed data are created automatically on first run.
 
-### 2. Setup Frontend
-In a new terminal:
+---
+
+### 3. Start the Frontend
+Open a **new terminal**:
 ```bash
 cd frontend
 npm install
-```
-
-Start the Vite development server:
-```bash
 npm run dev
 ```
-*The frontend will run on `http://localhost:5173` and automatically proxy API requests to the backend.*
+> The app will be available at **http://localhost:5173**  
+> Vite automatically proxies all `/api/*` requests to the backend on port 5001.
 
-## Design System: "Oceanic Pulse"
+---
 
-The frontend UI is built from scratch with a custom design system generated in Stitch MCP:
-- **Colors:** Deep Navy surfaces (`#0b1521`), Vibrant Teal primary (`#22d3ee`), Warm Coral secondary (`#fb7185`), Amber tertiary (`#fbbf24`).
-- **Typography:** Display headlines in *Space Grotesk*, body text in *Inter*.
-- **Aesthetic:** Dark glassmorphism (`backdrop-filter`), smooth glow shadows, and bold gradients (`linear-gradient(135deg, #22d3ee 0%, #fb7185 100%)`).
+## 🎨 Design System — "Oceanic Pulse"
 
-## Author
-Kishan Agarwal
+A custom dark design system built in vanilla CSS with design tokens.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--color-bg` | `#0b1521` | Deep Navy — page background |
+| `--color-surface` | `rgba(255,255,255,0.06)` | Glassmorphism card surfaces |
+| `--color-primary` | `#22d3ee` | Vibrant Teal — primary actions & accents |
+| `--color-secondary` | `#fb7185` | Warm Coral — secondary highlights |
+| `--color-tertiary` | `#fbbf24` | Amber — warnings & ratings |
+| `--font-display` | *Space Grotesk* | Headlines & brand text |
+| `--font-body` | *Inter* | Body copy & UI labels |
+
+**Aesthetic:** Dark glassmorphism (`backdrop-filter: blur`), smooth glow box-shadows, bold linear gradients, and subtle entrance animations.
+
+---
+
+## 🗺️ Campus Route
+
+The shuttle follows a fixed **6-stop loop** with 24 GPS waypoints, simulated at 20 km/h:
+
+```
+Main Gate → SMV Block → J Block → Technology Tower → SJT Block → PRP Block → (repeat)
+```
+
+10 shuttles are seeded in the database, evenly spaced across the route, and advance one waypoint every **3 seconds**.
+
+---
+
+## 👤 Author
+
+**Kishan Agarwal** — VIT Vellore  
+Web Programming Project, 2024–25
