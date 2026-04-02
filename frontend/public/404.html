@@ -4,40 +4,17 @@
     <meta charset="utf-8">
     <title>VIT Shuttle Management</title>
     <script type="text/javascript">
-      // Single Page Apps for GitHub Pages
-      // MIT License
-      // https://github.com/rafgraph/spa-github-pages
-      // This script checks if a redirect is present in the query string,
-      // converts it back into the correct url and adds it to the
-      // browser's history using window.history.replaceState(...),
-      // which will cause the browser to look for the matching route for
-      // the SPA and render the correct page.
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        }
-      }(window.location))
+      (function (location) {
+        var basePath = '/ShuttleManagement_Web_Prog/';
+        var path = location.pathname.indexOf(basePath) === 0
+          ? location.pathname.slice(basePath.length)
+          : location.pathname.replace(/^\//, '');
+        var search = location.search ? '&' + location.search.slice(1).replace(/&/g, '~and~') : '';
+        var redirect = basePath + '?/' + path + search + location.hash;
+
+        location.replace(redirect);
+      }(window.location));
     </script>
-    <script type="text/javascript">
-      // This script will redirect to the index.html with the current path
-      // stored in the query string, which index.html will then use
-      // to restore the correct subpath in the SPA.
-      var pathSegmentToKeep = 0; // Set this to the number of segments to keep (e.g. 1 if you have a repo subpath)
-      
-      // If your site is at username.github.io/repo-name/, then set pathSegmentToKeep to 1.
-      var l = window.location;
-      
-      // Check if we are at the root of the repo (with or without trailing slash)
-      // If not, redirect to the index.html with the path in the query string.
-      // This part is a bit tricky if we don't know the exact subpath length.
-      // But for GitHub Pages, pathSegmentToKeep = 1 is common.
-    </script>
-    <meta http-equiv="refresh" content="0;URL='./'">
   </head>
   <body>
     Redirecting...

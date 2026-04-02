@@ -3,6 +3,21 @@
 
 <head>
   <meta charset="UTF-8" />
+  <script type="text/javascript">
+    (function (location) {
+      if (location.search && location.search.startsWith('?/')) {
+        var decoded = location.search.slice(1).split('&').map(function (segment) {
+          return segment.replace(/~and~/g, '&');
+        }).join('?');
+
+        window.history.replaceState(
+          null,
+          null,
+          location.pathname.replace(/\/$/, '') + decoded + location.hash
+        );
+      }
+    }(window.location));
+  </script>
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

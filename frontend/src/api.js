@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-// Use relative URLs — Vite proxy handles forwarding to backend
+const apiBaseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+
+// Use a configurable base URL so the app works locally and when hosted separately
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: apiBaseURL,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
@@ -25,7 +27,7 @@ api.interceptors.response.use(
         if (error.response?.status === 401 || error.response?.status === 403) {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/login';
+            window.location.href = `${import.meta.env.BASE_URL}login`;
         }
         return Promise.reject(error);
     }

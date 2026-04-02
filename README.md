@@ -155,6 +155,16 @@ npm run dev
 
 ---
 
+## 🌐 GitHub Pages Deployment
+
+This repository includes a GitHub Pages workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) that builds the React app from `frontend/` and publishes it to Pages on every push to `main`.
+
+The frontend is configured for the repository subpath `/ShuttleManagement_Web_Prog/`, and the SPA fallback files in `frontend/index.html` and `frontend/public/404.html` keep client-side routes working on refresh.
+
+Important: GitHub Pages can host the frontend only. The login, shuttle, and feedback features still require the Express API in `backend/` to be deployed separately. If you host the backend elsewhere, set `VITE_API_BASE_URL` as a GitHub repository variable so the Pages build points to the live API.
+
+---
+
 ## 🎨 Design System — "Oceanic Pulse"
 
 A custom dark design system built in vanilla CSS with design tokens.
