@@ -178,6 +178,8 @@ The frontend is configured for the repository subpath `/ShuttleManagement_Web_Pr
 
 Important: GitHub Pages can host the frontend only. The login, shuttle, and feedback features still require the Express API in `backend/` to be deployed separately. If you host the backend elsewhere, set `VITE_API_BASE_URL` as a GitHub repository variable so the Pages build points to the live API.
 
+When no backend URL is configured on GitHub Pages, the login screen uses browser-local demo accounts so account creation and sign-in still work in the deployed static site.
+
 ---
 
 ## 🎨 Design System — "Oceanic Pulse"
