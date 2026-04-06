@@ -6,7 +6,6 @@ const router = express.Router();
 
 const MAX_MESSAGE_LENGTH = 500;
 
-// POST /api/feedback - Submit feedback
 router.post('/', authenticateToken, (req, res) => {
     try {
         const { rating, message } = req.body;
@@ -15,7 +14,6 @@ router.post('/', authenticateToken, (req, res) => {
             return res.status(400).json({ error: 'Rating must be an integer between 1 and 5' });
         }
 
-        // Sanitize message
         const sanitizedMessage = message
             ? String(message).trim().slice(0, MAX_MESSAGE_LENGTH)
             : '';
@@ -37,7 +35,6 @@ router.post('/', authenticateToken, (req, res) => {
     }
 });
 
-// GET /api/feedback - Get all feedback (with pagination)
 router.get('/', authenticateToken, (req, res) => {
     try {
         const page = Math.max(1, parseInt(req.query.page) || 1);
@@ -69,14 +66,12 @@ router.get('/', authenticateToken, (req, res) => {
     }
 });
 
-// DELETE /api/feedback/:id - Delete feedback
 router.delete('/:id', authenticateToken, (req, res) => {
     try {
         const feedbackId = req.params.id;
         
-        const feedback = db.prepare('SELECT user_id FROM feedback WHERE id = ?').get(feedbackId);
+        const feedback = db.prepare('SELECT id FROM feedback WHERE id = ?').get(feedbackId);
         if (!feedback) return res.status(404).json({ error: 'Feedback not found' });
-        if (feedback.user_id !== req.user.id) return res.status(403).json({ error: 'Unauthorized to delete this feedback' });
         
         db.prepare('DELETE FROM feedback WHERE id = ?').run(feedbackId);
         

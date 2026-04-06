@@ -6,10 +6,8 @@ require('dotenv').config();
 
 const router = express.Router();
 
-// VIT email regex
 const VIT_EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@vitstudent\.ac\.in$/;
 
-// POST /api/auth/register
 router.post('/register', (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -26,7 +24,6 @@ router.post('/register', (req, res) => {
             return res.status(400).json({ error: 'Password must be at least 6 characters' });
         }
 
-        // Check if user already exists
         const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
         if (existingUser) {
             return res.status(409).json({ error: 'User with this email already exists' });
@@ -52,7 +49,6 @@ router.post('/register', (req, res) => {
     }
 });
 
-// POST /api/auth/login
 router.post('/login', (req, res) => {
     try {
         const { email, password } = req.body;

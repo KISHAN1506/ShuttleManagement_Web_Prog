@@ -146,7 +146,13 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-brand">
-        <div className="login-brand-icon">🚌</div>
+        <div className="login-brand-icon">
+          <img
+            src={`${import.meta.env.BASE_URL}logo.svg`}
+            alt="VIT Shuttle"
+            className="login-brand-logo"
+          />
+        </div>
         <div className="login-brand-title">VIT Shuttle</div>
         <div className="login-brand-sub">Smart Campus Initiative</div>
       </div>
@@ -290,7 +296,7 @@ export default function Login() {
         <a href="#help">Help Desk</a>
         <br />
         <span style={{ display: "block", marginTop: "6px" }}>
-          © 2024 VIT Shuttle. Smart Campus Initiative.
+          © 2026 VIT Shuttle. Smart Campus Initiative.
         </span>
       </div>
     </div>

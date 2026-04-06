@@ -3,10 +3,8 @@ const path = require('path');
 
 const db = new Database(path.join(__dirname, 'shuttle.db'));
 
-// Enable WAL mode for better performance
 db.pragma('journal_mode = WAL');
 
-// Create tables
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,7 +42,6 @@ db.exec(`
   );
 `);
 
-// Route stops: Main Gate → SMV → J Block → TT → SJT → PRP (loop)
 const ROUTE_STOPS = [
   ['Main Gate', 12.96920, 79.15590],
   ['SMV Block', 12.97040, 79.15720],
@@ -54,7 +51,6 @@ const ROUTE_STOPS = [
   ['PRP Block', 12.96980, 79.15420],
 ];
 
-// Re-seed bus stops to match the official route
 const stopCount = db.prepare('SELECT COUNT(*) as count FROM bus_stops').get();
 if (stopCount.count === 0) {
   const insertStop = db.prepare('INSERT INTO bus_stops (name, latitude, longitude) VALUES (?, ?, ?)');
@@ -64,12 +60,9 @@ if (stopCount.count === 0) {
   insertMany(ROUTE_STOPS);
 }
 
-// Seed 10 shuttles, each evenly spaced across the route waypoints
-// Route has ~24 waypoints total; space shuttles every ~2-3 waypoints apart
 const TOTAL_WAYPOINTS = 24; // matches ROUTE_WAYPOINTS array in bus.js
 const busCount = db.prepare('SELECT COUNT(*) as count FROM bus_locations').get();
 if (busCount.count === 0) {
-  // Detailed waypoints matching those in bus.js (same order)
   const waypoints = [
     { lat: 12.96920, lng: 79.15590 }, // Main Gate
     { lat: 12.96960, lng: 79.15620 },
@@ -108,6 +101,56 @@ if (busCount.count === 0) {
     }
   });
   insertBuses();
+}
+
+const feedbackCount = db.prepare('SELECT COUNT(*) as count FROM feedback').get();
+if (feedbackCount.count === 0) {
+  const demoUsers = [
+    ['Aarav Sharma', 'aarav.sharma@vitstudent.ac.in'],
+    ['Diya Nair', 'diya.nair@vitstudent.ac.in'],
+    ['Karthik R', 'karthik.r@vitstudent.ac.in'],
+    ['Meera Iyer', 'meera.iyer@vitstudent.ac.in'],
+    ['Rohan Das', 'rohan.das@vitstudent.ac.in'],
+    ['Sneha Gupta', 'sneha.gupta@vitstudent.ac.in'],
+    ['Varun Menon', 'varun.menon@vitstudent.ac.in'],
+    ['Priya S', 'priya.s@vitstudent.ac.in'],
+    ['Nikhil Jain', 'nikhil.jain@vitstudent.ac.in'],
+    ['Ananya Rao', 'ananya.rao@vitstudent.ac.in'],
+  ];
+
+  const reviews = [
+    { rating: 5, message: 'Very punctual service this week. Great experience!' },
+    { rating: 4, message: 'Buses are mostly on time, app tracking is helpful.' },
+    { rating: 3, message: 'Decent overall, but evening frequency can improve.' },
+    { rating: 2, message: 'Long wait near PRP Block during peak hours.' },
+    { rating: 1, message: 'Bus skipped my stop once, please fix route discipline.' },
+    { rating: 5, message: 'Clean buses and polite staff. Loved the smooth ride.' },
+    { rating: 4, message: 'Good updates in the app. ETA feels accurate most times.' },
+    { rating: 3, message: 'Service is okay, but crowding is high before classes.' },
+    { rating: 2, message: 'Night shuttle was delayed today by around 20 minutes.' },
+    { rating: 5, message: 'Excellent initiative for campus transport. Keep it up!' },
+  ];
+
+  const insertUser = db.prepare(
+    'INSERT OR IGNORE INTO users (name, email, password_hash) VALUES (?, ?, ?)'
+  );
+  const getUserId = db.prepare('SELECT id FROM users WHERE email = ?');
+  const insertFeedback = db.prepare(
+    'INSERT INTO feedback (user_id, rating, message) VALUES (?, ?, ?)'
+  );
+
+  const seedFeedback = db.transaction(() => {
+    for (let i = 0; i < reviews.length; i++) {
+      const [name, email] = demoUsers[i];
+      insertUser.run(name, email, '$2a$10$seeded.feedback.placeholder.hash.value');
+      const user = getUserId.get(email);
+      if (user) {
+        insertFeedback.run(user.id, reviews[i].rating, reviews[i].message);
+      }
+    }
+  });
+
+  seedFeedback();
 }
 
 module.exports = db;

@@ -6,7 +6,6 @@ const router = express.Router();
 
 const FARE_PER_TRIP = 20; // ₹20 flat fare
 
-// Route waypoints: Main Gate → SMV → J Block → TT → SJT → PRP → Main Gate (loop)
 const ROUTE_WAYPOINTS = [
     { lat: 12.96920, lng: 79.15590 }, // 0  Main Gate
     { lat: 12.96960, lng: 79.15620 }, // 1
@@ -34,14 +33,12 @@ const ROUTE_WAYPOINTS = [
     { lat: 12.96920, lng: 79.15590 }, // 23 Back to Main Gate
 ];
 
-// Load all shuttle waypoint indices from DB
 const shuttleState = {};
 const allBuses = db.prepare('SELECT bus_name, waypoint_index FROM bus_locations').all();
 for (const bus of allBuses) {
     shuttleState[bus.bus_name] = bus.waypoint_index || 0;
 }
 
-// Simulate all 10 shuttles moving every 3 seconds
 setInterval(() => {
     const updateBus = db.prepare(
         'UPDATE bus_locations SET latitude = ?, longitude = ?, waypoint_index = ?, updated_at = CURRENT_TIMESTAMP WHERE bus_name = ?'
@@ -50,7 +47,6 @@ setInterval(() => {
         for (const busName of Object.keys(shuttleState)) {
             shuttleState[busName] = (shuttleState[busName] + 1) % ROUTE_WAYPOINTS.length;
             const wp = ROUTE_WAYPOINTS[shuttleState[busName]];
-            // Small jitter for realism
             const lat = wp.lat + (Math.random() - 0.5) * 0.0001;
             const lng = wp.lng + (Math.random() - 0.5) * 0.0001;
             updateBus.run(lat, lng, shuttleState[busName], busName);
@@ -59,7 +55,6 @@ setInterval(() => {
     moveAll();
 }, 3000);
 
-// Haversine formula — returns distance in metres
 function haversineDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
     const toRad = (d) => (d * Math.PI) / 180;
@@ -71,15 +66,11 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// ETA calculation: assume 20 km/h on campus
 function etaMinutes(distanceMeters) {
     const minutes = Math.round((distanceMeters / 1000 / 20) * 60);
     return Math.max(1, minutes);
 }
 
-// ─────────────────────────────────────────────
-// GET /api/bus/location — all 10 shuttle locations
-// ─────────────────────────────────────────────
 router.get('/location', authenticateToken, (req, res) => {
     try {
         const buses = db.prepare('SELECT * FROM bus_locations').all();
@@ -99,9 +90,6 @@ router.get('/location', authenticateToken, (req, res) => {
     }
 });
 
-// ─────────────────────────────────────────────
-// GET /api/bus/stops — all bus stops
-// ─────────────────────────────────────────────
 router.get('/stops', authenticateToken, (req, res) => {
     try {
         const stops = db.prepare('SELECT * FROM bus_stops').all();
@@ -113,9 +101,6 @@ router.get('/stops', authenticateToken, (req, res) => {
     }
 });
 
-// ─────────────────────────────────────────────
-// POST /api/bus/select-stop — select a bus stop
-// ─────────────────────────────────────────────
 router.post('/select-stop', authenticateToken, (req, res) => {
     try {
         const { stop_id } = req.body;
@@ -132,18 +117,11 @@ router.post('/select-stop', authenticateToken, (req, res) => {
     }
 });
 
-// ─────────────────────────────────────────────
-// GET /api/bus/eta — nearest shuttle info + destination ETA
-// Query params:
-//   lat, lng          — student's current location
-//   dest_stop_id      — (optional) destination stop ID
-// ─────────────────────────────────────────────
 router.get('/eta', authenticateToken, (req, res) => {
     try {
         const { lat, lng, dest_stop_id } = req.query;
         const buses = db.prepare('SELECT * FROM bus_locations').all();
 
-        // ── Nearest shuttle to student ──
         let nearestBus = null;
         let nearestDist = Infinity;
 
@@ -159,7 +137,6 @@ router.get('/eta', authenticateToken, (req, res) => {
             }
         }
 
-        // ── ETA to user's selected stop (nearest bus → stop) ──
         const user = db.prepare('SELECT selected_stop_id FROM users WHERE id = ?').get(req.user.id);
         let stopInfo = null;
         if (user && user.selected_stop_id && nearestBus) {
@@ -175,7 +152,6 @@ router.get('/eta', authenticateToken, (req, res) => {
             }
         }
 
-        // ── Destination ETA (nearest bus → destination stop) ──
         let destinationInfo = null;
         if (dest_stop_id && nearestBus) {
             const destStop = db.prepare('SELECT * FROM bus_stops WHERE id = ?').get(parseInt(dest_stop_id));

@@ -13,6 +13,9 @@ backend/.env
 backend/shuttle.db
 backend/shuttle.db-shm
 backend/shuttle.db-wal
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
 
 # Build directories
 dist/

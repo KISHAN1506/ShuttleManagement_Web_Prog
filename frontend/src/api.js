@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const apiBaseURL = import.meta.env.VITE_API_BASE_URL || '/api';
 
-// Use a configurable base URL so the app works locally and when hosted separately
 const api = axios.create({
     baseURL: apiBaseURL,
     timeout: 10000,
@@ -11,7 +10,6 @@ const api = axios.create({
     },
 });
 
-// Attach auth token to every request
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -20,7 +18,6 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Handle 401/403 globally — redirect to login
 api.interceptors.response.use(
     (response) => response,
     (error) => {
